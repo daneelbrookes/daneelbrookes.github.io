@@ -1,0 +1,62 @@
+
+Hi there! This will be the first post of many in the series "RAT Dev" where I will be documenting the process of creating and deploying my own RAT. In this post I'll be going over what a RAT is, the stages of my RAT and more.
+
+## What is a RAT?
+
+A RAT is a **Remote Access Tool** that gives access to a victims computer remotely. It usually involves a victim running a malicious file, which connects to a C2 Server (Command And Control). Then the server can relay instructions to the victims computer. This gives an attacker access to pretty much anything on the victim's computer.
+
+For example, a **reverse shell** might be implemented so that the attacker can run shell commands on the victims computer. This allows the attacker to navigate through the victim's file system, download files from the victim's computer and a lot more. 
+
+There are lots of things a RAT can do, not just a reverse shell, but the premise is that it gives an attacker remote access to a computer. In my rat, I'll be implementing a reverse shell into the 
+payload.
+
+## The Malware Stages
+
+Usually, when malware is ran on a victim's computer it is split up into multiple stages to avoid detection from an antivirus. I will be splitting my RAT up into 3 main stages, in each stage I describe what I want that stage to do, this is a general plan for what I want to implement into my malware.
+
+**stage 3** (.exe, ran by the victim) ->
+```
+- Download stage 2 and run it
+```
+
+**stage 2** (shellcode)->
+```
+- Implement timing delays to evade behavioral analysis.
+- Perform Virtual Machine Detection and other environment checks after initial execution delay.
+- Create Persistence using fileless techniques (e.g., registry keys, WMI events, scheduled tasks).
+- Implement advanced persistence with rootkit integration for kernel-level control.
+- Unhook APIs by restoring original function bytes in memory to evade detection by security tools.
+- Download stage 1.
+- Employ process hollowing to run stage 1.
+- Encrypt and obfuscate C2 communication, with fallback domains or peer-to-peer backups.
+```
+
+**stage 1** (shellcode)->
+```
+- The main payload. 
+- Simple Reverse TCP Shell for remote command execution. 
+- Implement strong encryption (e.g., AES) for C2 communications to protect against interception. 
+- Add functionality for privilege escalation, lateral movement, and data exfiltration as needed. 
+- Enable modular commands to support dynamic tasking. 
+- Include self-destruction mechanisms if detection is likely. 
+- Anti-forensics: Erase logs, disable recovery options, and corrupt forensic artifacts. 
+- Anti-monitoring techniques to evade Sysmon, Event Logs, and EDR tools.
+```
+
+Don't worry if you don't understand what each stage does, this is just a rough plan for what I want the stages to do, each point will be talked about in later articles.
+
+These are the stages for the file that the victim will run, but I still need to work on my C2 server, for now the C2 Server and Payload will be a Reverse TCP Shell. When I mention the 'payload' I'm talking about the main malware stage (Stage 1) I want to be ran on the victim's computer, this stage contains a lot of functionality which can easily be detected by an antivirus if it is ran as an **exe**.
+
+Anti-viruses will use something called **static analysis** which checks the code of files on  computer's disk for anything suspicious, most payloads will easily be detected, so the payload needs to be ran within the **memory** of the computer. Stage 2 will download the payload and run it within the memory so that it never touches the disk, bypassing static analysis. However, the code for Stage 2 is also suspicious so it also needs to be ran in memory, which is what Stage 3 does.
+
+Stage 3 is the only stage that will be checked statically, so this stage cannot do anything suspicious that might be flagged by an antivirus.
+
+Modern malware might even implement 4, 5 or 6 stages for running the payload, but for now 3 stages is completely fine. 
+
+## What will the payload do?
+
+For now, all I want the payload to do is act as a Reverse Shell, the other functionality (AES encryption, privilege escalation, etc) can be implemented once I've completed the base functionality of each stage. 
+
+In the next post, I'll be making a simple C2 Server and Payload which will act as my reverse shell.
+
+
