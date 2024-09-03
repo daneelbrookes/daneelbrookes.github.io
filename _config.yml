@@ -19,12 +19,12 @@ description: >- # this means to ignore newlines until "baseurl:"
   My malware development blog. I talk about what I'm currently doing and learning.
 twitter_username: username
 github_username: username
-minimal_mistakes_skin: "dark"
 search: true
 
 # Build settings
 markdown: kramdown
 remote_theme: mmistakes/minimal-mistakes
+minimal_mistakes_skin: dark
 # Outputting
 permalink: /:categories/:title/
 paginate: 5 # amount of posts to show
